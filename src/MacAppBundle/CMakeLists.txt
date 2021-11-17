@@ -83,7 +83,7 @@ endif(BUILD_QT5)
   install(FILES ${_pak_resolved_files} DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
   # add icudtl.dat
- 
+
   install(PROGRAMS "${Qt5Core_DIR}/../../../lib/QtWebEngineCore.framework/Versions/5/Resources/icudtl.dat" DESTINATION ${CMAKE_INSTALL_PREFIX}/)
   	install(PROGRAMS "${Qt5Core_DIR}/../../../lib/QtWebEngineCore.framework/Versions/5/Resources/QtWebEngineCore.prl" DESTINATION ${CMAKE_INSTALL_PREFIX}/)
   endif(BUILD_WEB)
@@ -112,7 +112,7 @@ install(CODE "execute_process(COMMAND chmod -R a+w ${CMAKE_INSTALL_LIBDIR})")
 get_filename_component(APP_PATH ${CMAKE_INSTALL_PREFIX} PATH)
 
 execute_process(
-       COMMAND find /usr/local/Cellar/icu4c -name pkgconfig
+       COMMAND find /usr/local/Cellar/icu4c@67.1 -name pkgconfig
        RESULT_VARIABLE CMD_ERROR
        OUTPUT_VARIABLE CONFIG_ICU)
 set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:${CONFIG_ICU}")
@@ -123,13 +123,33 @@ execute_process(
        COMMAND find /usr/local/Cellar/nglib -name MacOS
        OUTPUT_VARIABLE CONFIG_NGLIB)
 
-install(CODE 
+execute_process(
+       COMMAND find /usr/local/Cellar/llvm -name lib
+       OUTPUT_VARIABLE CONFIG_LLVM)
+
+execute_process(
+       COMMAND find /usr/local/Cellar/pyside2 -name lib
+       OUTPUT_VARIABLE CONFIG_PYSIDE2)
+
+execute_process(
+       COMMAND find /usr/local/Cellar/opencascade@7.5.3 -name lib
+       OUTPUT_VARIABLE CONFIG_OPENCASCADE)
+
+execute_process(
+       COMMAND find /usr/local/Cellar/med-file -name lib
+       OUTPUT_VARIABLE CONFIG_MEDFILE)
+
+execute_process(
+       COMMAND find /usr/local/Cellar/netcdf -name lib
+       OUTPUT_VARIABLE CONFIG_NETCDF)
+
+install(CODE
     "message(STATUS \"Making bundle relocatable...\")
     # The top-level CMakeLists.txt should prevent multiple package manager
     # prefixes from being set, so the lib path will resolve correctly...
     execute_process(
         COMMAND python2.7
         ${CMAKE_SOURCE_DIR}/src/Tools/MakeMacBundleRelocatable.py
-        ${APP_PATH} ${HOMEBREW_PREFIX}${MACPORTS_PREFIX}/lib ${ICU_PREFIX}/lib/ /usr/local/opt ${CONFIG_NGLIB} ${Qt5Core_DIR}/../../.. ${XCTEST_PATH} ${WEBKIT_FRAMEWORK_DIR}
+        ${APP_PATH} ${ICU_PREFIX}/lib/ ${CONFIG_LLVM} ${CONFIG_NGLIB} ${CONFIG_PYSIDE2} ${CONFIG_OPENCASCADE} ${CONFIG_MEDFILE} ${CONFIG_NETCDF} ${Qt5Core_DIR}/../../.. ${XCTEST_PATH} ${WEBKIT_FRAMEWORK_DIR}
     )"
 )
