@@ -10,7 +10,8 @@ include(CheckIncludeFileCXX)
 include(CheckCXXSourceCompiles)
 
 #check_include_file(dlfcn.h HAVE_DLFCN_H)
-check_include_file(GL/gl.h HAVE_GL_GL_H)
+# check_include_file(GL/gl.h HAVE_GL_GL_H)
+check_include_file(OpenGL/gl.h HAVE_GL_GL_H)
 
 #check_include_file(iomanip.h HAVE_IOMANIP_H)
 #check_include_file(limits.h HAVE_LIMITS_H)
